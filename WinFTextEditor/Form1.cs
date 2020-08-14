@@ -12,6 +12,9 @@ namespace WinFTextEditor
 {
     public partial class Form1 : Form
     {
+        string saveFilePath;
+        string lastSaved;
+        
         public Form1()
         {
             InitializeComponent();
@@ -21,10 +24,14 @@ namespace WinFTextEditor
         {
             tBoxMain.Text = "";
             tBoxAddString.Text = "";
+            saveFilePath = null;
+            lastSaved = "";
         }
 
         private void btnAddString_Click(object sender, EventArgs e)
         {
+            if (tBoxMain.Text != "")
+                tBoxMain.Text += "\n";
             tBoxMain.Text += tBoxAddString.Text;
             tBoxAddString.Text = "";
         }
@@ -39,9 +46,23 @@ namespace WinFTextEditor
            
             sb = FileIO.Read(openFD.FileName);
             tBoxMain.Text = sb.ToString();
+            saveFilePath = openFD.FileName;
         }
 
         private void btnSaveAs_Click(object sender, EventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (saveFilePath != null)
+                FileIO.Write(tBoxMain, saveFilePath);
+            else
+                SaveFile();
+        }
+
+        private void SaveFile()
         {
             SaveFileDialog saveFD = new SaveFileDialog();
             saveFD.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -49,8 +70,15 @@ namespace WinFTextEditor
 
             if (saveFD.ShowDialog() == DialogResult.OK)
             {
-                FileIO.Write(tBoxMain, saveFD.FileName);               
-            }
+                FileIO.Write(tBoxMain, saveFD.FileName);
+                lastSaved = tBoxMain.Text;
+                saveFilePath = saveFD.FileName;
+            }          
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

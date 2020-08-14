@@ -44,6 +44,7 @@ namespace WinFTextEditor
                 StreamWriter sw = new StreamWriter(fileName, false);
                 sw.WriteLine(box.Text);
                 sw.Close();
+                MessageBox.Show("Saved successfully");
             }
             catch
             {

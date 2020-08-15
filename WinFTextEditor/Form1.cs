@@ -13,7 +13,7 @@ namespace WinFTextEditor
     public partial class Form1 : Form
     {
         string saveFilePath;
-        string lastSaved;
+        string lastSaved = "";
         
         public Form1()
         {
@@ -47,6 +47,7 @@ namespace WinFTextEditor
             sb = FileIO.Read(openFD.FileName);
             tBoxMain.Text = sb.ToString();
             saveFilePath = openFD.FileName;
+            lastSaved = tBoxMain.Text;
         }
 
         private void btnSaveAs_Click(object sender, EventArgs e)
@@ -78,6 +79,17 @@ namespace WinFTextEditor
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            if (!lastSaved.Equals(tBoxMain.Text))
+            {
+                DialogResult res = MessageBox.Show("Wish to save changes?", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                if (res == DialogResult.OK)
+                {
+                    if (saveFilePath != null)
+                        FileIO.Write(tBoxMain, saveFilePath);
+                    else
+                        SaveFile();
+                }
+            }
             this.Close();
         }
     }

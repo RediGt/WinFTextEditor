@@ -24,14 +24,14 @@ namespace WinFTextEditor
         {
             tBoxMain.Text = "";
             tBoxAddString.Text = "";
-            saveFilePath = null;
             lastSaved = "";
+            saveFilePath = null;            
         }
 
         private void btnAddString_Click(object sender, EventArgs e)
         {
             if (tBoxMain.Text != "")
-                tBoxMain.Text += "\n";
+                tBoxMain.Text += Environment.NewLine;
             tBoxMain.Text += tBoxAddString.Text;
             tBoxAddString.Text = "";
         }
@@ -52,18 +52,15 @@ namespace WinFTextEditor
 
         private void btnSaveAs_Click(object sender, EventArgs e)
         {
-            SaveFile();
+            SaveAsToFile();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (saveFilePath != null)
-                FileIO.Write(tBoxMain, saveFilePath);
-            else
-                SaveFile();
+            SaveToFile();
         }
 
-        private void SaveFile()
+        private void SaveAsToFile()
         {
             SaveFileDialog saveFD = new SaveFileDialog();
             saveFD.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -77,18 +74,21 @@ namespace WinFTextEditor
             }          
         }
 
+        private void SaveToFile()
+        {
+            if (saveFilePath != null)
+                FileIO.Write(tBoxMain, saveFilePath);
+            else
+                SaveAsToFile();
+        }
+
         private void btnExit_Click(object sender, EventArgs e)
         {
             if (!lastSaved.Equals(tBoxMain.Text))
             {
                 DialogResult res = MessageBox.Show("Wish to save changes?", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                 if (res == DialogResult.OK)
-                {
-                    if (saveFilePath != null)
-                        FileIO.Write(tBoxMain, saveFilePath);
-                    else
-                        SaveFile();
-                }
+                    SaveToFile();
             }
             this.Close();
         }
